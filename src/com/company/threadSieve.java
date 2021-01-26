@@ -3,8 +3,9 @@ package com.company;
 import java.util.concurrent.CyclicBarrier;
 public class threadSieve extends Thread {
 
-    static long n = 100000; // primes will be found from below N
-    static boolean[] primeTable = new boolean[(int) n + 1];
+    //static long n = 2147483630; // primes will be found from below N
+    static long n = 100; // primes will be found from below N
+    static boolean[] primeTable = new boolean[(int)n + 1];
     static int p = 4;
     static long currentPrimeTableNum = 2;
     static CyclicBarrier barrier = new CyclicBarrier(p);
@@ -52,28 +53,29 @@ public class threadSieve extends Thread {
         this.me = me;
     }
 
-    long region = n / p; // range of n that each thread is responsible for e.g. for n = 100 thread 0  controls 0 - 25
-
+    //long region = n / p; // range of n that each thread is responsible for e.g. for n = 100 thread 0  controls 0 - 25
+    long block;
+    long begin = 0;
+    long end;
     public void run() {
 
         while (currentPrimeTableNum < n) {
-         //   System.out.println(currentPrimeTableNum + ": current Prime");
-            long block;
-            long begin = 0;
-
+            //   System.out.println(currentPrimeTableNum + ": current Prime");
+            long multipleCount = n / currentPrimeTableNum; // 50
             // find how to split the loads
-            long remainder = region % currentPrimeTableNum;
+            long remainder =multipleCount % p; // 2
 
             if(remainder == 0){
                 // all block sizes are same if divides evenly
-                block = region/ (currentPrimeTableNum);
+                block = multipleCount/ p;
+                begin = (me * block) * currentPrimeTableNum;
             }else{
                 // first blocks up to the remainder are larger if does not divide evenly
                 if(me < remainder){
-                    block =(long) Math.ceil((double)region /currentPrimeTableNum);
+                    block =(long) Math.ceil((double)multipleCount /p);
                     begin = (me * block) * currentPrimeTableNum;
                 }else{
-                    block = (long) Math.floor((double)region /currentPrimeTableNum);
+                    block = (long) Math.floor((double)multipleCount /p);
                     // adjust begin for due to the larger blocks
                     begin = (me * block) * currentPrimeTableNum + (remainder * currentPrimeTableNum);
                 }
@@ -82,7 +84,7 @@ public class threadSieve extends Thread {
 
             // find how many iterations are needed to be per thread
 
-            long end = begin + (block) * currentPrimeTableNum;
+            end = begin + (block) * currentPrimeTableNum;
 
             if(end > n){ end = n;} // prevent out of bounds error
             if (begin == 0) {
@@ -99,10 +101,11 @@ public class threadSieve extends Thread {
             }
             // update the table for all threads
             sync();
+            System.out.println("me :" + me + "block size :" + block + "reaminder" + remainder +" start: " + begin+ "end:" + end + " current prime" + currentPrimeTableNum);
             // find the next prime
             if (me == 0) {
                 for (long i = currentPrimeTableNum + 1; i < n + 1; i++) {
-                    if (primeTable[(int) i] == true) {
+                    if (primeTable[(int) i]) {
                         currentPrimeTableNum = i;
                         break;
                     } else {
@@ -111,6 +114,7 @@ public class threadSieve extends Thread {
                 }
             }
             //update the current prime for all other threads
+
             sync();
 
         }
@@ -124,3 +128,6 @@ public class threadSieve extends Thread {
         }
     }
 }
+
+//todo fix desync
+//todo find out why barrier is slowing work down
