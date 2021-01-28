@@ -4,9 +4,9 @@ import java.util.concurrent.CyclicBarrier;
 public class threadSieve extends Thread {
 
     //static long n = 2147483630; // primes will be found from below N
-    static long n = 100; // primes will be found from below N
+    static long n = 100000000; // primes will be found from below N
     static boolean[] primeTable = new boolean[(int)n + 1];
-    static int p = 4;
+    static int p = 1;
     static long currentPrimeTableNum = 2;
     static CyclicBarrier barrier = new CyclicBarrier(p);
 
@@ -43,9 +43,9 @@ public class threadSieve extends Thread {
                 System.out.println(i + " ");
             }
         }
-        System.out.println("Calculation completed in : " + (endTime - startTime) + " ms");
-
-    }
+       System.out.println("Calculation completed in : " + (endTime - startTime) + " ms");
+//
+   }
 
     int me;
 
@@ -59,7 +59,7 @@ public class threadSieve extends Thread {
     long end;
     public void run() {
 
-        while (currentPrimeTableNum < n) {
+        while (currentPrimeTableNum < Math.sqrt(n)) { // largest val for sieve is root n
             //   System.out.println(currentPrimeTableNum + ": current Prime");
             long multipleCount = n / currentPrimeTableNum; // 50
             // find how to split the loads
@@ -100,8 +100,8 @@ public class threadSieve extends Thread {
 
             }
             // update the table for all threads
-            sync();
-            System.out.println("me :" + me + "block size :" + block + "reaminder" + remainder +" start: " + begin+ "end:" + end + " current prime" + currentPrimeTableNum);
+           sync();
+  //          System.out.println("me :" + me + "block size :" + block + "reaminder" + remainder +" start: " + begin+ "end:" + end + " current prime" + currentPrimeTableNum);
             // find the next prime
             if (me == 0) {
                 for (long i = currentPrimeTableNum + 1; i < n + 1; i++) {
