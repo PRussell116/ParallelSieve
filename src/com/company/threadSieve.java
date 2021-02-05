@@ -6,7 +6,7 @@ public class threadSieve extends Thread {
     //static long n = 2147483630; // primes will be found from below N
     static long n = 100000000; // primes will be found from below N
     static boolean[] primeTable = new boolean[(int)n + 1];
-    static int p = 1;
+    static int p = 1; // thread count
     static long currentPrimeTableNum = 2;
     static CyclicBarrier barrier = new CyclicBarrier(p);
 
