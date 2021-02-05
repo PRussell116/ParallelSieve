@@ -38,11 +38,11 @@ public class threadSieve extends Thread {
 
         long endTime = System.currentTimeMillis();
         //print primes
-        for (long i = 2; i < n; i++) {
-            if (primeTable[(int) i]) {
-                System.out.println(i + " ");
-            }
-        }
+//        for (long i = 2; i < n; i++) {
+//            if (primeTable[(int) i]) {
+//                System.out.println(i + " ");
+//            }
+//        }
        System.out.println("Calculation completed in : " + (endTime - startTime) + " ms");
 //
    }
@@ -60,10 +60,11 @@ public class threadSieve extends Thread {
     public void run() {
 
         while (currentPrimeTableNum < Math.sqrt(n)) { // largest val for sieve is root n
+        // largest val for sieve is root n
             //   System.out.println(currentPrimeTableNum + ": current Prime");
-            long multipleCount = n / currentPrimeTableNum; // 50
+            long multipleCount = n / currentPrimeTableNum;
             // find how to split the loads
-            long remainder =multipleCount % p; // 2
+            long remainder =multipleCount % p; // p = thread count
 
             if(remainder == 0){
                 // all block sizes are same if divides evenly
@@ -101,7 +102,6 @@ public class threadSieve extends Thread {
             }
             // update the table for all threads
            sync();
-  //          System.out.println("me :" + me + "block size :" + block + "reaminder" + remainder +" start: " + begin+ "end:" + end + " current prime" + currentPrimeTableNum);
             // find the next prime
             if (me == 0) {
                 for (long i = currentPrimeTableNum + 1; i < n + 1; i++) {
@@ -128,6 +128,3 @@ public class threadSieve extends Thread {
         }
     }
 }
-
-//todo fix desync
-//todo find out why barrier is slowing work down

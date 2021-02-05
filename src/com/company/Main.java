@@ -5,7 +5,7 @@ import java.time.Instant;
 public class Main {
 
     public static void main(String[] args) {
-	long n =100000;// primes will be found from below N
+	long n =100000000;// primes will be found from below N
     boolean[] primeTable = new boolean[(int)n+1]; // table of true representing a prime number
 
 
@@ -26,12 +26,12 @@ public class Main {
     }
     long endTime =System.currentTimeMillis();
     //print primes
-    for(int i = 2; i<n;i++){
-        if(primeTable[i] == true){
-            System.out.println(i + " ");
-        }
-    }
-    System.out.println("Calculation completed in : " + (endTime-startTime) + " ns");
+//    for(int i = 2; i<n;i++){
+//        if(primeTable[i] == true){
+//            System.out.println(i + " ");
+//        }
+//    }
+    System.out.println("Calculation completed in : " + (endTime-startTime) + " ms");
 
         
     }
